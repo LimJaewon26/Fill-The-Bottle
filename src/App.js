@@ -1,64 +1,55 @@
 import { useState } from 'react';
 import './App.css';
 
-
 function Main(props){
   return <div id='Main'> 
     <button onClick={props.ModeChange}>START</button>
   </div>
 }
-
-function InGame(props){
-
-
-
-
-  return <div>
-      <p><b>STAGE {props.stage}</b></p>
-      <button onClick={props.ModeChange}>STOP</button>
-    </div>
+function End(props){
+  return<div id='End'> 
+  <button onClick={props.ModeChange}>RESTART</button>
+</div>
 }
-
-function PauseGame(props){
-  return <div>
-    <p><b>STAGE {props.stage}</b></p> 
-    <button onClick={props.ModeChange}>START</button>
-  </div>
-}
-
 
 function App() {
 
   const [mode, setmode] = useState('Main');
+  const [water,setwater] = useState(10);
+
   let content = null;
-  let stage = 1;
-  let MaxStage = 1;
+  let speed = 500
 
   if(mode === 'Main')
   {
+    if(water !== 10)
+      setwater(10);
     content = <Main ModeChange = {() => setmode("InGame")}></Main>
   }
   else if(mode === 'InGame')
   {
-
-
-    content = <InGame  stage = {stage} ModeChange = {() => {setmode("PauseGame")}}></InGame>
+    let timeout = setTimeout(() => {
+      setwater(water-1);
+    }, speed);
+    if(water <= 0)
+    {
+      clearTimeout(timeout);
+      setmode("End");
+    }  
   }
-  else if(mode === 'PauseGame')
+  else if(mode === 'End')
   {
-    content = <PauseGame stage = {stage} ModeChange = {() => {setmode("InGame")}}></PauseGame>
+    content = <End ModeChange = {() => {setmode("Main")}}></End>
   }
-
   return (
     <div>
-      <header>
-        <h1>Fill The Bottle</h1>
+    <header>
+      <h1>Fill The Bottle</h1>
       </header>
       {content}
       <img src = {require("./images/bottle.png")} alt = 'bottle'></img>
-      <img id = "water" src = {require("./images/water.png")} alt = 'water'></img>
+      <img id = {"water" + water} src = {require("./images/water.png")} alt = 'water'></img>
     </div>
   );
 }
-
 export default App;
